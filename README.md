@@ -5,4 +5,13 @@
 
 
 
-##### base de dados utilizado: https://www.kaggle.com/sudalairajkumar/novel-corona-virus-2019-dataset
+## base de dados 
+
+#### sudalaira: https://www.kaggle.com/sudalairajkumar/novel-corona-virus-2019-dataset
+
+
+## Tecnologias 
+```bash
+Python 
+Anaconda
+```
