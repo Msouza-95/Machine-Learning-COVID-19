@@ -1,6 +1,7 @@
+from numpy import tile
 import plotly.express as px
 from datetime import datetime
 
-def confirmedCase(data):
-    return px.line(data, 'observationdate', 'confirmed',
-                   title='Casos confimados {}'.format(data.countryregion))
+
+def plot(data, myX, myY, myTitle):
+    return px.line(data, x = myX, y = myY, title ='{} {}'.format(myTitle,data.countryregion))
