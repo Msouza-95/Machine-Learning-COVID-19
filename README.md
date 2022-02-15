@@ -9,9 +9,18 @@
 
 #### sudalaira: https://www.kaggle.com/sudalairajkumar/novel-corona-virus-2019-dataset
 
-
+## Dependências
+### importar o Environment no Anaconda, disponivel na pasta Envi
+### instalar a biblioteca xx 
+```bash
+xxx
+``` 
+### instalar a biblioteca fbprophet
+```bash
+conda install -c conda-forge fbprophet -y
+``` 
 ## Tecnologias 
 ```bash
 Python 
-Anaconda
+Anaconda-navigator
 ```
