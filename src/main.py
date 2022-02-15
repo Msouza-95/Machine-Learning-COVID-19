@@ -2,8 +2,6 @@ from ast import parse
 from statistics import mode
 from turtle import title
 import pandas as pd
-import plotly.express as px
-from datetime import datetime
 import numpy as np
 import plotly.graph_objects as pgo
 from statsmodels.tsa.seasonal import seasonal_decompose
@@ -39,67 +37,24 @@ graphic.plot(dataFrameCountry, "observationdate",
 
 print(dataFrameCountry)
 
-# Mortes
+# gerar grafico de Mortes
 
-fig = pgo.Figure()
-
-fig.add_trace(
-    pgo.Scatter(x=dataFrameCountry.observationdate, y=dataFrameCountry.deaths, name="mortes",
-                mode='lines+markers', line={'color': 'red'})
-)
-
-fig.update_layout(title='Mortes por  COVID-19 no {}'.format(country))
-
-fig.show()
-
+graphic.plotDeathByday(dataFrameCountry, country)
 
 # taxa de crescimento médio  no pais em todo o periodo.
 print(rates.growthRate(dataFrameCountry, 'confirmed'))
 
-
 # taxa de cresicmento diarios
-def dailyGrowthRate(data, variable, date_init=None):
-    if date_init == None:
-        date_init = data.observationdate.loc[data[variable] > 0].min()
-    else:
-        date_init = pd.to_datetime(date_init)
 
-    date_end = data.observationdate.max()
+rate_days = rates.dailyGrowthRate(dataFrameCountry, 'confirmed')
 
-    n = (date_end - date_init).days
-
-    # taxa calculada de um dia para o outro
-    rate = list(map(
-        lambda x: (data[variable].iloc[x] -
-                   data[variable].iloc[x-1]) / data[variable].iloc[x-1],
-        range(1, n+1)
-    ))
-
-    return np.array(rate) * 100
-
-
-rate_days = dailyGrowthRate(dataFrameCountry, 'confirmed')
-
-print(rate_days)
 
 firstDay = dataFrameCountry.observationdate.loc[dataFrameCountry.confirmed > 0].min(
 )
 
-# inserir o plot do grafico.))
+# grafico de Taxa de crescimento de casos confirmado
 
-#px.line(x =pd.date_range(firstDay, dataFrameCountry.observationdate.max())[1:], y = rate_days, title = 'Taxa de crescimento de casos confirmados no Brasil')
-
-
-fig2 = pgo.Figure()
-
-fig2.add_trace(
-    pgo.Scatter(x=pd.date_range(firstDay, dataFrameCountry.observationdate.max())[1:], y=rate_days, name="taxa",
-                mode='lines', line={'color': 'blue'})
-)
-
-fig2.update_layout(title='Taxa de crescimento de casos confirmados no {}'.format(country))
-
-fig2.show()
+graphic.plotGrowthRate(firstDay, dataFrameCountry, rate_days, country)
 
 
 # Predições
@@ -109,15 +64,8 @@ confirmed.index = dataFrameCountry.observationdate
 
 res = seasonal_decompose(confirmed)
 
-figure, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(10, 8))
-
-ax1.plot(res.observed)
-ax2.plot(res.trend)
-ax3.plot(res.seasonal)
-ax4.plot(confirmed.index, res.resid)
-ax4.axhline(0, linestyle='dashed', c='black')
-plt.savefig('Seasonal.png', format='png')
-plt.show()
+# graficos de Prediction 
+graphic.plotPrediction(confirmed, res)
 
 
 # analise de series temporais  Arima, essse metódo tenta modela o futuro com predições do passado

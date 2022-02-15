@@ -1,5 +1,5 @@
 import pandas as pd
-
+import numpy as np
 
 # taxa de crescimento = (presente/passado)^(1/n)- 1
 def growthRate(data, variable, date_init=None, date_end=None):
@@ -27,3 +27,23 @@ def growthRate(data, variable, date_init=None, date_end=None):
     rate = (present/past)**(1/n) - 1
 
     return rate*100
+
+
+def dailyGrowthRate(data, variable, date_init=None):
+    if date_init == None:
+        date_init = data.observationdate.loc[data[variable] > 0].min()
+    else:
+        date_init = pd.to_datetime(date_init)
+
+    date_end = data.observationdate.max()
+
+    n = (date_end - date_init).days
+
+    # taxa calculada de um dia para o outro
+    rate = list(map(
+        lambda x: (data[variable].iloc[x] -
+                   data[variable].iloc[x-1]) / data[variable].iloc[x-1],
+        range(1, n+1)
+    ))
+
+    return np.array(rate) * 100
