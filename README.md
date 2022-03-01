@@ -1,7 +1,7 @@
 
 #  Machine Learning COVID-19
 
-### Esse projeto utiliza na liguagem de programação python e Machine Learning para prever os números de casos do Covid-19 e o ponto de virada da curva de infeção no Brasil. 
+### Esse projeto utiliza na linguagem de programação python e Machine Learning para prever os números de casos do Covid-19 e o ponto de virada da curva de infeção no Brasil. 
 
 ## base de dados 
 
