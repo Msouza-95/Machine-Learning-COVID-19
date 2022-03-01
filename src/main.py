@@ -21,8 +21,8 @@ country = 'Brazil'
 dataFrameCountry = format.filterByCountry(dataFrame, country)
 
 
-graphic.plot(dataFrameCountry, "observationdate",
-             'confirmed', 'Casos confirmados')
+graphic.plot(dataFrameCountry.observationdate,
+             dataFrameCountry.confirmed, 'Casos confirmados')
 
 
 # novos casos por dias (progamação funcional)
@@ -32,10 +32,10 @@ dataFrameCountry['newcases'] = list(map(
     np.arange(dataFrameCountry.shape[0])
 ))
 
-graphic.plot(dataFrameCountry, "observationdate",
-             'newcases', 'Novos casos por dia no {}'.format(country))
+graphic.plot( dataFrameCountry.observationdate,
+             dataFrameCountry.newcases, 'Novos casos por dia no {}'.format(country))
 
-print(dataFrameCountry)
+#print(dataFrameCountry)
 
 # gerar grafico de Mortes
 
@@ -72,23 +72,9 @@ graphic.plotPrediction(confirmed, res)
 
 model = auto_arima(confirmed)
 
-fig3 = pgo.Figure(pgo.Scatter(
-    x=confirmed.index, y=confirmed, name='Observados'
-))
+# grafico de Privisão de casos confirmados
 
-fig3.add_trace(pgo.Scatter(
-    x=confirmed.index, y=model.predict_in_sample(), name='Preditos'
-))
-
-fig3.add_trace(pgo.Scatter(
-    x=pd.date_range('2020-05-20', '2020-06-20'), y=model.predict(28), name='Forecast'
-))
-
-
-fig3.update_layout(
-    title=' Privisão de casos confirmados no {} na faixa de 30 dias' .format(country))
-fig3.show()
-
+graphic.plotForecastOfCases(confirmed,model,country)
 
 
 train = confirmed.reset_index()[:-5]
@@ -103,7 +89,6 @@ prophet = Prophet(growth='logistic', changepoints=[
                   '2020-03-21', '2020-03-30', '2020-04-25', '2020-04-25', '2020-05-03', '2020-05-10'])
 
 
-
 pop = 211463256
 train['cap']= pop 
 
@@ -111,19 +96,21 @@ train['cap']= pop
 
 prophet.fit(train)
 
-
 future_dates = prophet.make_future_dataframe(periods=200)
 future_dates['cap'] = pop
-
 forecast = prophet.predict(future_dates)
 
 
+ # grafico Predições de casos confirmados
+#graphic.plotPredictForecastOfCases(confirmed,train,country)
 
-fig4 = pgo.Figure()
+fig = pgo.Figure()
 
-fig4.add_trace(pgo.Scatter(x=forecast.ds, y= forecast.yhat, name = 'Predição'))
-fig4.add_trace(pgo.Scatter(x=train.ds, y= train.y, name = 'Observados - Treino'))
-fig4.update_layout(title = 'Predições de casos confirmados no {}'.format(country))
-fig4.show()
+fig.add_trace(pgo.Scatter(x=forecast.ds, y=forecast.yhat, name='Predição'))
+fig.add_trace(pgo.Scatter(x=train.ds, y=train.y,
+                name='Observados - Treino'))
+fig.update_layout(
+    title='Predições de casos confirmados no {}'.format(country))
+fig.show()
 
 print('finalizou')

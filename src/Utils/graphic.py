@@ -5,11 +5,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def plot(data, myX, myY, myTitle):
-    px.line(data, x=myX, y=myY, title='{} {}'.format(
-        myTitle, data.countryregion))
+def plot(myX, myY, myTitle):
+    fig = pgo.Figure()
 
-    return
+    fig.add_trace(
+        pgo.Scatter(x=myX, y=myY, name=myTitle,
+                    mode='lines', line={'color': 'blue'})
+    )
+
+    fig.update_layout(title='{}'.format(myTitle))
+
+    fig.show()
+    return 
+
 
 
 def plotDeathByday(data, country):
@@ -45,7 +53,7 @@ def plotGrowthRate(firstDay, dataFrameCountry, rate_days, country):
 def plotPrediction(confirmed, res):
 
     figure, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, figsize=(10, 8))
-    
+
     ax1.plot(res.observed)
     ax2.plot(res.trend)
     ax3.plot(res.seasonal)
@@ -54,3 +62,25 @@ def plotPrediction(confirmed, res):
     plt.savefig('Seasonal.png', format='png')
     plt.show()
     return
+
+
+def plotForecastOfCases(confirmed, model, country):
+    fig = pgo.Figure(pgo.Scatter(
+        x=confirmed.index, y=confirmed, name='Observados'
+    ))
+
+    fig.add_trace(pgo.Scatter(
+        x=confirmed.index, y=model.predict_in_sample(), name='Preditos'
+    ))
+
+    fig.add_trace(pgo.Scatter(
+        x=pd.date_range('2020-05-20', '2020-06-20'), y=model.predict(28), name='Forecast'
+    ))
+
+    fig.update_layout(
+        title=' Privisão de casos confirmados no {} na faixa de 30 dias' .format(country))
+    fig.show()
+
+    return
+
+
